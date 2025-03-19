@@ -1,0 +1,126 @@
+/* reports.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f8f9fa;
+  color: #333;
+  padding: 1rem;
+}
+
+header {
+  background: #343a40;
+  color: #fff;
+  padding: 1rem;
+  text-align: center;
+}
+
+header nav {
+  margin-top: 1rem;
+}
+
+header nav a,
+header nav button {
+  background: #6c757d;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin: 0.3rem;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.report-selector {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.report-selector label,
+.report-selector select,
+.report-selector input {
+  padding: 0.6rem;
+  font-size: 1rem;
+}
+
+.report-controls {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.report-controls button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  margin: 0.3rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.report-controls button:hover {
+  background-color: #0056b3;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+table th,
+table td {
+  border: 1px solid #ccc;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+table th {
+  background-color: #e9ecef;
+}
+
+.low-stock {
+  background-color: #ffdddd;
+  font-weight: bold;
+}
+
+.report-section {
+  margin-bottom: 3rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  table tr {
+    margin-bottom: 1rem;
+  }
+
+  table td, table th {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  table td::before,
+  table th::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    width: 45%;
+    padding-left: 0.5rem;
+    font-weight: bold;
+    text-align: left;
+  }
+}
