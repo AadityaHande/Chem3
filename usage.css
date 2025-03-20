@@ -1,0 +1,196 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+    color: #000;
+    padding: 20px;
+    transition: background 0.3s, color 0.3s;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1E40AF;
+    padding: 15px 20px;
+    color: white;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.logo{
+    font-size: 1.7rem;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.sort-options {
+    margin: 15px 0;
+}
+
+.chemical-list {
+    list-style: none;
+    padding: 0;
+}
+
+.chemical-item {
+    background: white;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+button {
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.edit-btn {
+    background: #1E40AF;
+    color: white;
+}
+
+.add-btn {
+    background: #16A34A;
+    color: white;
+}
+
+.delete-btn {
+    background: #DC2626;
+    color: white;
+}
+
+.dark-mode-btn {
+    background: #333;
+    color: white;
+}
+
+/* Dark Mode */
+.dark-mode {
+    background-color: #1E1E1E;
+    color: white;
+}
+
+.dark-mode .navbar {
+    background-color: #121212;
+}
+
+.dark-mode .chemical-item {
+    background-color: #333;
+    color: white;
+}
+
+.dark-mode .search-bar,
+.dark-mode .sort-options select {
+    background-color: #222;
+    color: white;
+}
+
+.dark-mode .dark-mode-btn {
+    background: #555;
+    border: 1px solid white;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .navbar {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* Search Bar */
+.search-bar {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.search-bar:focus {
+    border-color: #1E40AF;
+    box-shadow: 0px 0px 5px rgba(30, 64, 175, 0.5);
+}
+
+/* Sort Options Container */
+.sort-options {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+/* Sort Label */
+.sort-options label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Sort Dropdown */
+.sort-options select {
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    background-color: white;
+    color: #333;
+}
+
+/* Hover and Focus Effects */
+.sort-options select:hover,
+.sort-options select:focus {
+    border-color: #1E40AF;
+    box-shadow: 0px 0px 5px rgba(30, 64, 175, 0.5);
+}
+
+/* Dark Mode Adjustments */
+.dark-mode .search-bar,
+.dark-mode .sort-options select {
+    background-color: #222;
+    color: white;
+    border: 2px solid #4B5563;
+}
+
+.dark-mode .sort-options label {
+    background-color: #222;
+    color: white;
+}
+
+.dark-mode .search-bar:focus,
+.dark-mode .sort-options select:focus {
+    border-color: #007bff;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+}

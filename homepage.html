@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemical Tracker</title>
+    <link rel="stylesheet" href="homepage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="homepage.js" defer></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+     <!-- Navbar -->
+     <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-flask-vial"></i>
+            <h1>Chemical Tracker</h1>
+        </div>
+        
+        <div class="user-section">
+            <div class="user-icon">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div class="user-details">
+                <span class="user-name">Guest</span>
+                <span class="user-email">-</span>
+            </div>
+            <button class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="card" onclick="location.href='view-chem.html'">
+            <h2>View Chemicals</h2>
+            <p>Check the list of available chemicals in the lab.</p>
+        </div>
+        <div class="card" onclick="location.href='usage.html'">
+            <h2>Usage History</h2>
+            <p>Track the usage history of chemicals.</p>
+        </div>
+                
+        <div class="card" onclick="location.href='report.html'">
+            <h2>Reports & Analytics</h2>
+            <p>View reports and analytics on chemical usage.</p>
+        </div>
+    </div>
+
+</body>
+</html>

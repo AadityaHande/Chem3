@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login & Register | Chemical Tracker</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Registration Form -->
+    <div class="form-container register-container">
+      <h2>Registration</h2>
+      <input type="text" id="regUsername" placeholder="Username">
+      <input type="email" id="regEmail" placeholder="Email">
+      <input type="password" id="regPassword" placeholder="Password">
+      <button class="btn" id="registerBtn">Register</button>
+      <p>or register with social platforms</p>
+      <button id="googleRegisterBtn" class="google-btn">Register with Google</button>
+      <p>Already have an account? <a href="#" id="login-link">Login</a></p>
+    </div>
+
+    <!-- Login Form -->
+    <div class="form-container login-container active">
+      <h2>Login</h2>
+      <input type="email" id="loginEmail" placeholder="Email">
+      <input type="password" id="loginPassword" placeholder="Password">
+      <button class="btn" id="loginBtn">Login</button>
+      <p>Forgot password?</p>
+      <p>or login with social platforms</p>
+      <button id="googleLoginBtn" class="google-btn">Login with Google</button>
+      <p>Don't have an account? <a href="#" id="register-link">Register</a></p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db } from "../firebase/firebase-config.js";
+    import {
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signInWithPopup,
+      GoogleAuthProvider
+    } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+    import {
+      doc,
+      setDoc,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+    // Registration with Email/Password
+    document.getElementById("registerBtn").addEventListener("click", async () => {
+      const username = document.getElementById("regUsername").value;
+      const email = document.getElementById("regEmail").value;
+      const password = document.getElementById("regPassword").value;
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await setDoc(doc(db, "users", user.uid), {
+          name: username,
+          email: user.email,
+          role: "teacher"
+        });
+
+        window.location.href = "../FrontPage/FrontPage.html";
+      } catch (error) {
+        alert("Registration Failed: " + error.message);
+      }
+    });
+
+    // Login with Email/Password
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists()) {
+          await setDoc(userRef, { role: "teacher" });
+        }
+
+        window.location.href = "../FrontPage/FrontPage.html";
+      } catch (error) {
+        alert("Login Failed: " + error.message);
+      }
+    });
+
+    // Google Login/Register
+    const provider = new GoogleAuthProvider();
+
+    document.getElementById("googleLoginBtn").addEventListener("click", async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        const userRef = doc(db, "users", user.uid);
+        await setDoc(userRef, {
+          name: user.displayName,
+          email: user.email,
+          role: "teacher"
+        }, { merge: true });
+
+        window.location.href = "../FrontPage/FrontPage.html";
+      } catch (error) {
+        alert("Google Login Failed: " + error.message);
+      }
+    });
+
+    document.getElementById("googleRegisterBtn").addEventListener("click", async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        const userRef = doc(db, "users", user.uid);
+        await setDoc(userRef, {
+          name: user.displayName,
+          email: user.email,
+          role: "teacher"
+        }, { merge: true });
+
+        window.location.href = "../FrontPage/FrontPage.html";
+      } catch (error) {
+        alert("Google Registration Failed: " + error.message);
+      }
+    });
+
+    // Toggle between forms
+    document.getElementById("register-link").addEventListener("click", () => {
+      document.querySelector(".register-container").classList.add("active");
+      document.querySelector(".login-container").classList.remove("active");
+    });
+
+    document.getElementById("login-link").addEventListener("click", () => {
+      document.querySelector(".register-container").classList.remove("active");
+      document.querySelector(".login-container").classList.add("active");
+    });
+  </script>
+</body>
+</html>

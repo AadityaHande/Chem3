@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemical Database</title>
+    <link rel="stylesheet" href="view-chem.css">
+    <script src="view-chem.js" defer></script>
+</head>
+<body>
+    <nav>
+        <button onclick="goBack()">Back</button>
+        <input type="text" id="chemicalSearch" placeholder="Search Chemical...">
+        <button onclick="fetchChemicalData()">Search</button>
+    </nav>
+    <div class="container">
+        <h2 id="title">List of Chemicals</h2>
+        <div id="searchResult" class="hidden"></div>
+        <div id="chemicalList"></div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+/* General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Background with Glow Effect */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  animation: gradientBG 6s infinite alternate;
+}
+
+/* Background Animation */
+@keyframes gradientBG {
+  0% {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  }
+  100% {
+    background: linear-gradient(135deg, #16222A 0%, #3A6073 100%);
+  }
+}
+
+/* Main Container */
+.container {
+  width: 400px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 15px;
+  padding: 35px 30px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  color: white;
+  text-align: center;
+}
+
+/* Form Containers */
+.form-container {
+  display: none;
+}
+
+.form-container.active {
+  display: block;
+}
+
+/* Headings */
+.form-container h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: white;
+}
+
+/* Input Fields */
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container input[type="text"] {
+  width: 100%;
+  padding: 12px 15px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 16px;
+  outline: none;
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Buttons */
+.btn,
+.google-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+}
+
+.btn {
+  background-color: #ff7eb3;
+  color: white;
+}
+
+.btn:hover {
+  background-color: #ff5583;
+}
+
+.google-btn {
+  background-color: #de5246;
+  color: white;
+}
+
+.google-btn:hover {
+  background-color: #bf3a30;
+}
+
+/* Social Icons (if you use them again later) */
+.social-icons {
+  margin-top: 15px;
+}
+
+.social-icons i {
+  font-size: 22px;
+  margin: 5px;
+  cursor: pointer;
+  color: white;
+  transition: 0.3s;
+}
+
+.social-icons i:hover {
+  color: #ff7eb3;
+}
+
+/* Text & Links */
+.form-container p {
+  font-size: 14px;
+  margin: 10px 0;
+  color: #ddd;
+}
+
+a {
+  color: #ff7eb3;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chemical Reports</title>
+  <link rel="stylesheet" href="report.css">
+</head>
+<body onload="initReports()">
+  <header>
+    <h1>Chemical Tracker - Reports</h1>
+    <nav>
+      <button onclick="goBack()">Back</button>
+      <button onclick="logout()">Logout</button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="report-selector">
+      <label for="reportType">Select Report:</label>
+      <select id="reportType" onchange="switchReport()">
+        <option value="usage">Chemical Usage Report</option>
+        <option value="inventory">Current Chemical Inventory</option>
+        <option value="insight">Usage Summary (Insights)</option>
+      </select>
+      <input type="text" id="reportSearch" placeholder="Search chemical..." oninput="searchReports()" />
+    </div>
+
+    <div id="usageReport" class="report-section">
+      <h2>Chemical Usage Report</h2>
+      <button onclick="exportToCSV('usage')">Export CSV</button>
+      <button onclick="clearLogs()">Clear Logs</button>
+      <button onclick="toggleColumns()">Hide/Show Time & User</button>
+      <table id="usageTable">
+        <thead><tr><th>Name</th><th>Qty</th><th>Unit</th><th>User</th><th>Time</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div id="inventoryReport" class="report-section" style="display:none;">
+      <h2>Current Chemical Inventory</h2>
+      <button onclick="exportToCSV('inventory')">Export CSV</button>
+      <button onclick="renewStock()">Renew Stock</button>
+      <table id="inventoryTable">
+        <thead><tr><th>Name</th><th>Qty</th><th>Unit</th><th>Last Updated</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div id="insightReport" class="report-section" style="display:none;">
+      <h2>Usage Summary (Insights)</h2>
+      <button onclick="refreshInsights()">Refresh</button>
+      <button onclick="exportToCSV('insight')">Export Insights</button>
+      <table id="insightTable">
+        <thead><tr><th>Chemical</th><th>Total Usage</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="report.js"></script>
+</body>
+</html>
