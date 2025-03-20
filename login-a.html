@@ -63,7 +63,8 @@
           role: "teacher"
         });
 
-        window.location.href = "../FrontPage/FrontPage.html";
+        console.log("Login successful. Redirecting...");
+        window.location.href = "../homepage.html";
       } catch (error) {
         alert("Registration Failed: " + error.message);
       }
@@ -84,7 +85,8 @@
           await setDoc(userRef, { role: "teacher" });
         }
 
-        window.location.href = "../FrontPage/FrontPage.html";
+        console.log("Login successful. Redirecting...");
+        window.location.href = "../homepage.html";
       } catch (error) {
         alert("Login Failed: " + error.message);
       }
@@ -105,7 +107,8 @@
           role: "teacher"
         }, { merge: true });
 
-        window.location.href = "../FrontPage/FrontPage.html";
+        console.log("Login successful. Redirecting...");
+        window.location.href = "../homepage.html";
       } catch (error) {
         alert("Google Login Failed: " + error.message);
       }
@@ -123,7 +126,8 @@
           role: "teacher"
         }, { merge: true });
 
-        window.location.href = "../FrontPage/FrontPage.html";
+        console.log("Login successful. Redirecting...");
+        window.location.href = "../homepage.html";
       } catch (error) {
         alert("Google Registration Failed: " + error.message);
       }
