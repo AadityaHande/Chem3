@@ -1,221 +1,67 @@
-// usage.js
+// usage.js (Final Merged Version)
 
 // --- Firebase Integration ---
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-// Monitor authentication state and update the user info in the navbar
+// Load Firebase user data and role
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    // Update name and email from Firebase Auth
     document.getElementById("userName").textContent = user.displayName || "User";
     document.getElementById("userEmail").textContent = user.email;
-    // Optionally update user avatar if available:
-    if (user.photoURL) {
+
+    if (user.photoURL && document.getElementById("userAvatar")) {
       document.getElementById("userAvatar").src = user.photoURL;
     }
-    // Fetch the user role from Firestore
+
     try {
       const userRef = doc(db, "users", user.uid);
       const userSnap = await getDoc(userRef);
+
       if (userSnap.exists()) {
         const userData = userSnap.data();
-        document.getElementById("userRole").textContent = userData.role || "-";
-      } else {
-        document.getElementById("userRole").textContent = "-";
+        const role = userData.role || "-";
+        document.getElementById("userRole").textContent = role;
+
+        // Role-based button visibility
+        if (role === "admin" || role === "teacher") {
+          window.allowedToEdit = true;
+          const reportsBtn = document.getElementById("reportsBtn");
+          if (reportsBtn) reportsBtn.style.display = "inline-block";
+          const addBtn = document.getElementById("addChemicalBtn");
+          if (addBtn) addBtn.style.display = "block";
+        } else {
+          window.allowedToEdit = false;
+        }
       }
-    } catch (err) {
-      console.error("Error fetching user role:", err);
-      document.getElementById("userRole").textContent = "-";
+    } catch (error) {
+      console.error("Error fetching user role:", error);
     }
   } else {
-    // If not logged in, redirect to login
     window.location.href = "./login-a.html";
   }
 });
 
-// Logout functionality
+// Logout handling
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
   logoutBtn.addEventListener("click", () => {
     signOut(auth)
-      .then(() => {
-        window.location.href = "./login-a.html";
-      })
-      .catch((error) => {
-        console.error("Logout error:", error);
-      });
+      .then(() => window.location.href = "./login-a.html")
+      .catch((error) => console.error("Logout error:", error));
   });
 }
 
-// --------------------------
-// Existing Chemical Management Code
-// --------------------------
-
+// Chemical Data Handling
 let chemicals = JSON.parse(localStorage.getItem("chemicals")) || [];
-
-function back_btn(){
-  window.history.back();
-}
-
-function searchChemicals() {
-  let searchQuery = document.getElementById("searchBar").value.toLowerCase();
-  let filteredChemicals = chemicals.filter(chem => chem.name.toLowerCase().includes(searchQuery));
-  displayChemicals(filteredChemicals);
-}
-
-function sortChemicals() {
-  let sortBy = document.getElementById("sort").value;
-  if (sortBy === "low-quantity") {
-    chemicals.sort((a, b) => a.quantity - b.quantity);
-  } else if (sortBy === "high-quantity") {
-    chemicals.sort((a, b) => b.quantity - a.quantity);
-  } else if (sortBy === "latest-time") {
-    chemicals.sort((a, b) => new Date(b.time) - new Date(a.time));
-  }
-  saveToLocalStorage();
-  displayChemicals(chemicals);
-}
-
-function displayChemicals(list) {
-  const chemicalList = document.getElementById("chemicalList");
-  chemicalList.innerHTML = "";
-  list.forEach(chem => {
-    chemicalList.innerHTML += `
-      <li class="chemical-item">
-        <span>${chem.name} - ${chem.quantity} ${chem.unit}</span>
-        <div>
-          <button class="edit-btn" onclick="editChemical('${chem.name}')">Edit</button>
-          <button class="add-btn" onclick="addQuantity('${chem.name}')">Add</button>
-          <button class="delete-btn" onclick="deleteChemical('${chem.name}')">Delete</button>
-        </div>
-      </li>`;
-  });
-}
-
-function addChemical() {
-  if (!window.allowedToEdit) {
-    alert("You do not have permission to add chemicals.");
-    return;
-  }
-  let name = prompt("Enter chemical name:");
-  let quantity = parseFloat(prompt("Enter quantity:"));
-  let unit = prompt("Enter unit (ml, litre, g, kg, etc.):").toLowerCase();
-  let time = new Date().toISOString();
-
-  if (!name || isNaN(quantity) || !unit) {
-    alert("Invalid input!");
-    return;
-  }
-
-  let exists = chemicals.some(chem => chem.name.toLowerCase() === name.toLowerCase());
-  if (exists) {
-    alert("Chemical already exists!");
-    return;
-  }
-
-  chemicals.push({ name, quantity, unit, time });
-  logUsageAction(name, quantity, unit, "Added", document.getElementById("userEmail").innerText);
-  saveToLocalStorage();
-  displayChemicals(chemicals);
-}
-
-function editChemical(name) {
-  let chemical = chemicals.find(chem => chem.name === name);
-  if (!chemical) {
-    alert("Chemical not found!");
-    return;
-  }
-  let newQuantity = parseFloat(prompt(`Enter new quantity for ${name} (${chemical.unit}):`));
-  let newUnit = prompt(`Enter new unit for ${name} (${chemical.unit}):`).toLowerCase();
-
-  if (isNaN(newQuantity) || newQuantity < 0 || !newUnit) {
-    alert("Invalid input!");
-    return;
-  }
-
-  chemical.quantity = newQuantity;
-  chemical.unit = newUnit;
-  chemical.time = new Date().toISOString();
-  logUsageAction(name, newQuantity, newUnit, "Edited", document.getElementById("userEmail").innerText);
-  saveToLocalStorage();
-  displayChemicals(chemicals);
-}
-
-function addQuantity(name) {
-  let chemical = chemicals.find(chem => chem.name === name);
-  if (!chemical) {
-    alert("Chemical not found!");
-    return;
-  }
-  let additionalQuantity = parseFloat(prompt(`Enter quantity to add for ${name} (${chemical.unit}):`));
-  if (isNaN(additionalQuantity) || additionalQuantity <= 0) {
-    alert("Invalid quantity!");
-    return;
-  }
-  let selectedUnit = prompt("Select unit: ml, litre, g, kg").toLowerCase();
-  const validUnits = ["ml", "litre", "g", "kg"];
-  if (!validUnits.includes(selectedUnit)) {
-    alert("Invalid unit! Please enter ml, litre, g, or kg.");
-    return;
-  }
-  let baseCurrent = convertToBaseUnit(chemical.quantity, chemical.unit);
-  let baseNew = convertToBaseUnit(additionalQuantity, selectedUnit);
-
-  chemical.quantity = (baseCurrent + baseNew) / convertToBaseUnit(1, selectedUnit);
-  chemical.unit = selectedUnit;
-  chemical.time = new Date().toISOString();
-  logUsageAction(name, additionalQuantity, selectedUnit, "Quantity Added", document.getElementById("userEmail").innerText);
-  saveToLocalStorage();
-  displayChemicals(chemicals);
-}
-
-function deleteChemical(name) {
-  if (!window.allowedToEdit) {
-    alert("You do not have permission to delete chemicals.");
-    return;
-  }
-  let chemical = chemicals.find(chem => chem.name === name);
-  if (confirm(`Are you sure you want to delete ${name}?`)) {
-    chemicals = chemicals.filter(chem => chem.name !== name);
-    logUsageAction(name, chemical.quantity, chemical.unit, "Deleted", document.getElementById("userEmail").innerText);
-    saveToLocalStorage();
-    displayChemicals(chemicals);
-  }
-}
-
-function saveToLocalStorage() {
-  localStorage.setItem("chemicals", JSON.stringify(chemicals));
-}
-
-function loadFromLocalStorage() {
-  let storedChemicals = localStorage.getItem("chemicals");
-  if (storedChemicals) {
-    chemicals = JSON.parse(storedChemicals);
-    displayChemicals(chemicals);
-  }
-}
-
-function toggleDarkMode() {
-  document.body.classList.toggle("dark-mode");
-  let mode = document.body.classList.contains("dark-mode") ? "dark" : "light";
-  localStorage.setItem("theme", mode);
-}
-
-window.onload = function () {
-  loadFromLocalStorage();
-  if (localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark-mode");
-  }
-};
 
 function convertToBaseUnit(quantity, unit) {
   const unitConversion = {
-    "ml": 1, 
-    "litre": 1000,
-    "g": 1, 
-    "kg": 1000,
+    ml: 1,
+    litre: 1000,
+    g: 1,
+    kg: 1000,
   };
   return quantity * (unitConversion[unit] || 1);
 }
@@ -228,7 +74,129 @@ function logUsageAction(name, quantity, unit, actionType, user = "Unknown") {
     unit,
     user,
     time: new Date().toISOString(),
-    action: actionType
+    action: actionType,
   });
   localStorage.setItem("usageLogs", JSON.stringify(logs));
+}
+
+export function searchChemicals() {
+  const query = document.getElementById("searchBar").value.toLowerCase();
+  const filtered = chemicals.filter((c) =>
+    c.name.toLowerCase().includes(query)
+  );
+  displayChemicals(filtered);
+}
+
+export function sortChemicals() {
+  const sortBy = document.getElementById("sort").value;
+  chemicals.sort((a, b) => {
+    const aQty = convertToBaseUnit(a.quantity, a.unit);
+    const bQty = convertToBaseUnit(b.quantity, b.unit);
+    if (sortBy === "low-quantity") return aQty - bQty;
+    if (sortBy === "high-quantity") return bQty - aQty;
+    if (sortBy === "latest-time") return new Date(b.time) - new Date(a.time);
+  });
+  saveToLocalStorage();
+  displayChemicals(chemicals);
+}
+
+export function displayChemicals(list) {
+  const listContainer = document.getElementById("chemicalList");
+  listContainer.innerHTML = "";
+  list.forEach((chem) => {
+    listContainer.innerHTML += `
+      <li class="chemical-item">
+        <span>${chem.name} - ${chem.quantity} ${chem.unit} (Updated: ${new Date(chem.time).toLocaleString()})</span>
+        <div>
+          <button class="edit-btn" onclick="editChemical('${chem.name}')">Edit</button>
+          <button class="add-btn" onclick="addQuantity('${chem.name}')">Add</button>
+          <button class="delete-btn" onclick="deleteChemical('${chem.name}')">Delete</button>
+        </div>
+      </li>
+    `;
+  });
+}
+
+export function addChemical() {
+  if (!window.allowedToEdit) return alert("Permission denied.");
+  let name = prompt("Enter chemical name:");
+  let quantity = parseFloat(prompt("Enter quantity:"));
+  let unit = prompt("Enter unit (ml, litre, g, kg):").toLowerCase();
+  if (!name || isNaN(quantity) || !unit) return alert("Invalid input!");
+
+  if (chemicals.some((c) => c.name.toLowerCase() === name.toLowerCase()))
+    return alert("Chemical already exists!");
+
+  let time = new Date().toISOString();
+  chemicals.push({ name, quantity, unit, time });
+  logUsageAction(name, quantity, unit, "Added", document.getElementById("userEmail")?.innerText || "Unknown");
+  saveToLocalStorage();
+  displayChemicals(chemicals);
+}
+
+export function editChemical(name) {
+  if (!window.allowedToEdit) return alert("Permission denied.");
+  let chem = chemicals.find((c) => c.name === name);
+  if (!chem) return alert("Chemical not found.");
+  let newQuantity = parseFloat(prompt(`Enter new quantity for ${name}:`));
+  let newUnit = prompt(`Enter new unit for ${name}:`).toLowerCase();
+  if (isNaN(newQuantity) || !newUnit) return alert("Invalid input!");
+
+  chem.quantity = newQuantity;
+  chem.unit = newUnit;
+  chem.time = new Date().toISOString();
+  logUsageAction(name, newQuantity, newUnit, "Edited", document.getElementById("userEmail")?.innerText || "Unknown");
+  saveToLocalStorage();
+  displayChemicals(chemicals);
+}
+
+export function addQuantity(name) {
+  if (!window.allowedToEdit) return alert("Permission denied.");
+  let chem = chemicals.find((c) => c.name === name);
+  if (!chem) return alert("Chemical not found.");
+  let qty = parseFloat(prompt(`Enter quantity to add for ${name}:`));
+  if (isNaN(qty) || qty <= 0) return alert("Invalid quantity.");
+  let unit = prompt("Enter unit (ml, litre, g, kg):").toLowerCase();
+  if (!["ml", "litre", "g", "kg"].includes(unit)) return alert("Invalid unit.");
+
+  let total = convertToBaseUnit(chem.quantity, chem.unit) + convertToBaseUnit(qty, unit);
+  chem.quantity = total / convertToBaseUnit(1, unit);
+  chem.unit = unit;
+  chem.time = new Date().toISOString();
+  logUsageAction(name, qty, unit, "Added Quantity", document.getElementById("userEmail")?.innerText || "Unknown");
+  saveToLocalStorage();
+  displayChemicals(chemicals);
+}
+
+export function deleteChemical(name) {
+  if (!window.allowedToEdit) return alert("Permission denied.");
+  let chem = chemicals.find((c) => c.name === name);
+  if (!chem) return alert("Chemical not found.");
+  if (!confirm(`Are you sure you want to delete ${name}?`)) return;
+  chemicals = chemicals.filter((c) => c.name !== name);
+  logUsageAction(name, chem.quantity, chem.unit, "Deleted", document.getElementById("userEmail")?.innerText || "Unknown");
+  saveToLocalStorage();
+  displayChemicals(chemicals);
+}
+
+export function saveToLocalStorage() {
+  localStorage.setItem("chemicals", JSON.stringify(chemicals));
+}
+
+export function loadFromLocalStorage() {
+  const stored = localStorage.getItem("chemicals");
+  if (stored) {
+    chemicals = JSON.parse(stored);
+    displayChemicals(chemicals);
+  }
+}
+
+export function toggleDarkMode() {
+  document.body.classList.toggle("dark-mode");
+  const mode = document.body.classList.contains("dark-mode") ? "dark" : "light";
+  localStorage.setItem("theme", mode);
+}
+
+export function closeModal() {
+  document.getElementById("chemicalModal").style.display = "none";
 }
