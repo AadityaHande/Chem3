@@ -4,16 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login & Register | Chemical Tracker</title>
-  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="login.css" />
+  <script src="firebase_auth.js"></script>
 </head>
 <body>
   <div class="container">
     <!-- Registration Form -->
     <div class="form-container register-container">
       <h2>Registration</h2>
-      <input type="text" id="regUsername" placeholder="Username">
-      <input type="email" id="regEmail" placeholder="Email">
-      <input type="password" id="regPassword" placeholder="Password">
+      <input type="text" id="regUsername" placeholder="Username" />
+      <input type="email" id="regEmail" placeholder="Email" />
+      <input type="password" id="regPassword" placeholder="Password" />
       <button class="btn" id="registerBtn">Register</button>
       <p>or register with social platforms</p>
       <button id="googleRegisterBtn" class="google-btn">Register with Google</button>
@@ -23,8 +24,8 @@
     <!-- Login Form -->
     <div class="form-container login-container active">
       <h2>Login</h2>
-      <input type="email" id="loginEmail" placeholder="Email">
-      <input type="password" id="loginPassword" placeholder="Password">
+      <input type="email" id="loginEmail" placeholder="Email" />
+      <input type="password" id="loginPassword" placeholder="Password" />
       <button class="btn" id="loginBtn">Login</button>
       <p>Forgot password?</p>
       <p>or login with social platforms</p>
@@ -47,10 +48,13 @@
       getDoc
     } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-    // Registration with Email/Password
-    document.getElementById("registerBtn").addEventListener("click", async () => {
-      const username = document.getElementById("regUsername").value;
-      const email = document.getElementById("regEmail").value;
+    const registerBtn = document.getElementById("registerBtn");
+    const loginBtn = document.getElementById("loginBtn");
+
+    // Register
+    registerBtn.addEventListener("click", async () => {
+      const username = document.getElementById("regUsername").value.trim();
+      const email = document.getElementById("regEmail").value.trim();
       const password = document.getElementById("regPassword").value;
 
       try {
@@ -63,16 +67,16 @@
           role: "teacher"
         });
 
-        console.log("Login successful. Redirecting...");
+        console.log("Registration successful. Redirecting...");
         window.location.href = "./homepage.html";
       } catch (error) {
         alert("Registration Failed: " + error.message);
       }
     });
 
-    // Login with Email/Password
-    document.getElementById("loginBtn").addEventListener("click", async () => {
-      const email = document.getElementById("loginEmail").value;
+    // Login
+    loginBtn.addEventListener("click", async () => {
+      const email = document.getElementById("loginEmail").value.trim();
       const password = document.getElementById("loginPassword").value;
 
       try {
@@ -92,10 +96,10 @@
       }
     });
 
-    // Google Login/Register
+    // Google Auth (Register & Login)
     const provider = new GoogleAuthProvider();
 
-    document.getElementById("googleLoginBtn").addEventListener("click", async () => {
+    const googleHandler = async () => {
       try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
@@ -107,33 +111,17 @@
           role: "teacher"
         }, { merge: true });
 
-        console.log("Login successful. Redirecting...");
+        console.log("Google login successful. Redirecting...");
         window.location.href = "./homepage.html";
       } catch (error) {
-        alert("Google Login Failed: " + error.message);
+        alert("Google Auth Failed: " + error.message);
       }
-    });
+    };
 
-    document.getElementById("googleRegisterBtn").addEventListener("click", async () => {
-      try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
+    document.getElementById("googleLoginBtn").addEventListener("click", googleHandler);
+    document.getElementById("googleRegisterBtn").addEventListener("click", googleHandler);
 
-        const userRef = doc(db, "users", user.uid);
-        await setDoc(userRef, {
-          name: user.displayName,
-          email: user.email,
-          role: "teacher"
-        }, { merge: true });
-
-        console.log("Login successful. Redirecting...");
-        window.location.href = "./homepage.html";
-      } catch (error) {
-        alert("Google Registration Failed: " + error.message);
-      }
-    });
-
-    // Toggle between forms
+    // Toggle forms
     document.getElementById("register-link").addEventListener("click", () => {
       document.querySelector(".register-container").classList.add("active");
       document.querySelector(".login-container").classList.remove("active");
@@ -142,6 +130,29 @@
     document.getElementById("login-link").addEventListener("click", () => {
       document.querySelector(".register-container").classList.remove("active");
       document.querySelector(".login-container").classList.add("active");
+    });
+
+    // Trigger login/register on Enter key
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        const isLogin = document.querySelector(".login-container").classList.contains("active");
+        const isRegister = document.querySelector(".register-container").classList.contains("active");
+
+        if (isLogin) {
+          const email = document.getElementById("loginEmail").value.trim();
+          const password = document.getElementById("loginPassword").value;
+          if (email && password) {
+            loginBtn.click();
+          }
+        } else if (isRegister) {
+          const username = document.getElementById("regUsername").value.trim();
+          const email = document.getElementById("regEmail").value.trim();
+          const password = document.getElementById("regPassword").value;
+          if (username && email && password) {
+            registerBtn.click();
+          }
+        }
+      }
     });
   </script>
 </body>
