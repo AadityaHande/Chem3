@@ -1,140 +1,119 @@
-/* General Styles */
+/* login.css */
+
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Background with Glow Effect */
 body {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-  animation: gradientBG 6s infinite alternate;
+  background: linear-gradient(to right, #5b86e5, #36d1dc);
 }
 
-/* Background Animation */
-@keyframes gradientBG {
-  0% {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-  }
-  100% {
-    background: linear-gradient(135deg, #16222A 0%, #3A6073 100%);
-  }
-}
-
-/* Main Container */
 .container {
+  background-color: #fff;
   width: 400px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  border-radius: 15px;
-  padding: 35px 30px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  color: white;
-  text-align: center;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  position: relative;
+  transition: 0.3s ease;
 }
 
-/* Form Containers */
 .form-container {
   display: none;
+  flex-direction: column;
 }
 
 .form-container.active {
-  display: block;
+  display: flex;
 }
 
-/* Headings */
-.form-container h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: white;
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
 }
 
-/* Input Fields */
-.form-container input[type="email"],
-.form-container input[type="password"],
-.form-container input[type="text"] {
-  width: 100%;
-  padding: 12px 15px;
-  margin: 10px 0;
-  border: none;
+input {
+  padding: 12px 14px;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  font-size: 16px;
+  font-size: 1rem;
+  transition: 0.2s ease;
+}
+
+input:focus {
+  border-color: #5b86e5;
   outline: none;
-}
-
-input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-/* Buttons */
-.btn,
-.google-btn {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  margin-top: 10px;
-  cursor: pointer;
-  transition: 0.3s ease-in-out;
+  box-shadow: 0 0 5px rgba(91, 134, 229, 0.5);
 }
 
 .btn {
-  background-color: #ff7eb3;
-  color: white;
+  background-color: #5b86e5;
+  color: #fff;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+  margin-bottom: 1rem;
 }
 
 .btn:hover {
-  background-color: #ff5583;
+  background-color: #486bcc;
 }
 
 .google-btn {
-  background-color: #de5246;
+  background-color: #db4437;
   color: white;
+  font-weight: 500;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  margin-bottom: 1rem;
 }
 
 .google-btn:hover {
-  background-color: #bf3a30;
+  background-color: #c23321;
 }
 
-/* Social Icons (if you use them again later) */
-.social-icons {
-  margin-top: 15px;
-}
-
-.social-icons i {
-  font-size: 22px;
-  margin: 5px;
-  cursor: pointer;
-  color: white;
-  transition: 0.3s;
-}
-
-.social-icons i:hover {
-  color: #ff7eb3;
-}
-
-/* Text & Links */
-.form-container p {
-  font-size: 14px;
-  margin: 10px 0;
-  color: #ddd;
+p {
+  text-align: center;
+  margin: 0.5rem 0;
+  color: #555;
+  font-size: 0.95rem;
 }
 
 a {
-  color: #ff7eb3;
-  cursor: pointer;
+  color: #5b86e5;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 a:hover {
   text-decoration: underline;
 }
+
+@media (max-width: 450px) {
+  .container {
+    width: 90%;
+    padding: 1.5rem;
+  }
+
+  input,
+  .btn,
+  .google-btn {
+    font-size: 0.95rem;
+  }
+} 
